@@ -6,8 +6,8 @@ module day2 (
 
   input     logic      d_i,
 
-  //output    logic      q_norst_o,
-  //output    logic      q_syncrst_o,
+  output    logic      q_norst_o,
+  output    logic      q_syncrst_o,
   output    logic      q_asyncrst_o
 );
 
@@ -20,28 +20,29 @@ always_ff @(posedge clk or posedge reset) begin
 end
 
 //Sync reset FF
-//always_ff @(posedge clk) begin
-  //if(reset) q_syncrst_o <= 1'b0;
-   //else q_syncrst_o <= d_i;
-//end
+always_ff @(posedge clk) begin
+  if(reset) q_syncrst_o <= 1'b0;
+   else q_syncrst_o <= d_i;
+end
 
 //No reset
-//always_ff @(posedge clk) begin
-//    q_norst_o <= d_i;
-//end
+always_ff @(posedge clk) begin
+    q_norst_o <= d_i;
+end
 
 endmodule
 
-
 module tb;
-  output     logic      clk;
-  output     logic      reset;
+       logic      clk;
+       logic      reset;
 
-  output     logic      d_i;
+       logic      d_i;
 
-  //input    logic      q_norst_o;
-  //input    logic      q_syncrst_o;
-  input    logic      q_asyncrst_o;
+       logic      q_norst_o;
+       logic      q_syncrst_o;
+       logic      q_asyncrst_o;
+  
+  day2 rtl (.*);
   
   always #2 clk = !clk;
   
@@ -53,7 +54,9 @@ module tb;
   end
   
   initial begin
-    clk=0; d_i =1'b1;
+    reset=1; clk=0; d_i=1'b1;
+    @(posedge clk)
+    reset=0;
     #30;
     $finish;
   end
